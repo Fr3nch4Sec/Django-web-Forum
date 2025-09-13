@@ -1,0 +1,43 @@
+{% extends 'discussion/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{{ sujet.titre }}</h1>
+<p class="text-gray-600 dark:text-gray-300">
+    Posté par {{ sujet.auteur }} le {{ sujet.date_creation }}
+    {% if sujet.categorie %} | Catégorie : {{ sujet.categorie }}{% endif %}
+    {% if sujet.tags.all %} | Tags :
+    {% for tag in sujet.tags.all %}
+    <a href="{% url 'sujet_by_tag' tag.nom %}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ tag.nom
+        }}</a>{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    {% endif %}
+</p>
+{% for message in messages %}
+<div class="bg-white dark:bg-gray-800 p-4 mb-4 rounded shadow">
+    <p class="text-gray-900 dark:text-white">{{ message.contenu }}</p>
+    <p class="text-gray-600 dark:text-gray-300">Par {{ message.auteur }} le {{ message.date_creation }}</p>
+    <p class="text-gray-600 dark:text-gray-300">{{ message.likes.count }} Like(s)</p>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'like_message' message.id %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">
+            {% if user in message.likes.all %}Unlike{% else %}Like{% endif %}
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% empty %}
+<p class="text-gray-600 dark:text-gray-300">Aucun message.</p>
+{% endfor %}
+{% if user.is_authenticated %}
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+        Poster un message
+    </button>
+</form>
+{% endif %}
+{% endblock %}

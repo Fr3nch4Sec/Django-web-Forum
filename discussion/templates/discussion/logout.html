@@ -1,0 +1,18 @@
+{% extends 'discussion/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 p-4 rounded shadow text-gray-900 dark:text-white">
+    <h1 class="text-2xl font-bold mb-4">Déconnexion</h1>
+    <p>Vous êtes maintenant déconnecté.</p>
+    <a href="{% url 'login' %}"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+        Se reconnecter
+    </a>
+</div>
+<script>
+    setTimeout(() => {
+        window.location.href = "{% url 'sujet_list' %}";
+    }, 3000); // Redirige vers la page d'accueil après 3 secondes
+</script>
+{% endblock %}

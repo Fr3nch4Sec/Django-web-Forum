@@ -1,0 +1,42 @@
+{% extends 'discussion/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Sujets du Forum</h1>
+<form method="get" class="mb-4">
+    <input type="text" name="q" value="{{ query }}" placeholder="Rechercher un sujet..."
+        class="border rounded px-2 py-1 text-gray-900 dark:text-white dark:bg-gray-700">
+    <button type="submit"
+        class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">Rechercher</button>
+</form>
+{% for sujet in page_obj %}
+<div class="bg-white dark:bg-gray-800 p-4 mb-4 rounded shadow">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        <a href="{% url 'sujet_detail' sujet.pk %}" class="hover:underline">{{ sujet.titre }}</a>
+    </h2>
+    <p class="text-gray-600 dark:text-gray-300">
+        Posté par {{ sujet.auteur }} le {{ sujet.date_creation }}
+        {% if sujet.categorie %} | Catégorie : {{ sujet.categorie }}{% endif %}
+        {% if sujet.tags.all %} | Tags :
+        {% for tag in sujet.tags.all %}
+        <a href="{% url 'sujet_by_tag' tag.nom %}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ tag.nom
+            }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        {% endif %}
+    </p>
+</div>
+{% empty %}
+<p class="text-gray-600 dark:text-gray-300">Aucun sujet trouvé.</p>
+{% endfor %}
+<div class="pagination mt-4">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}"
+        class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">Précédent</a>
+    {% endif %}
+    <span class="px-2">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}"
+        class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">Suivant</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'discussion/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Notifications</h1>
+{% for notification in notifications %}
+<div class="bg-white dark:bg-gray-800 p-4 mb-4 rounded shadow">
+    <p class="text-gray-900 dark:text-white">
+        Vous avez été mentionné dans
+        <a href="{% url 'sujet_detail' notification.message.sujet.pk %}"
+            class="text-blue-600 dark:text-blue-400 hover:underline">
+            {{ notification.message.sujet.titre }}
+        </a>
+        par {{ notification.message.auteur }} le {{ notification.message.date_creation }}
+    </p>
+    <p class="text-gray-600 dark:text-gray-300">{{ notification.message.contenu|truncatewords:20 }}</p>
+    {% if not notification.lu %}
+    <span class="text-blue-600 dark:text-blue-400 font-semibold">Nouveau</span>
+    {% endif %}
+    <a href="{% url 'delete_notification' notification.id %}"
+        class="text-red-600 dark:text-red-400 hover:underline">Supprimer</a>
+</div>
+{% empty %}
+<p class="text-gray-600 dark:text-gray-300">Aucune notification.</p>
+{% endfor %}
+{% endblock %}
